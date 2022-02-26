@@ -1,0 +1,8 @@
+@font-face {
+  font-family: "OrientalBrush";
+  src: url("../public/oriental_brush.otf");
+}
+
+html {
+  background: #171119;
+}
