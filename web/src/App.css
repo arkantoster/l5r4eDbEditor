@@ -1,0 +1,30 @@
+@font-face {
+  font-family: "OrientalBrush";
+  src: url("../public/oriental_brush.otf");
+}
+
+html {
+  background: #171119;
+}
+
+.inputBasic {
+  width: 475px;
+  margin-left: 10px;
+  resize: none;
+}
+
+.inputBasic:focus {
+  outline: 2px solid #bebebe;
+}
+
+.rank{
+  width:20px;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  text-align: center;
+}
+
+.rank::-webkit-outer-spin-button, .rank::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;  
+}
