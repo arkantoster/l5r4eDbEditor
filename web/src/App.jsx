@@ -52,6 +52,57 @@ const ChooseButton = styled.button`
   }
 `
 
+const ORIGINS=[
+  {
+      "id": "core",
+      "name": "Core Rulebook"
+  },
+  {
+      "id": "bov",
+      "name": "Book of Void"
+  },
+  {
+      "id": "emerald_empire",
+      "name": "Emerald Empire"
+  },
+  {
+      "id": "lbs",
+      "name": "Legend of the Burning Sands"
+  },
+  {
+      "id": "great_clans",
+      "name": "The Great Clans"
+  },
+  {
+      "id": "community",
+      "name": "Community Content"
+  },
+  {
+      "id": "strogholds",
+      "name": "Strongholds of Empire"
+  },
+  {
+      "id": "boa",
+      "name": "Book of Air"
+  },
+  {
+      "id": "boe",
+      "name": "Book of Earth"
+  },
+  {
+      "id": "bof",
+      "name": "Book of Fire"
+  },
+  {
+      "id": "bow",
+      "name": "Book of Water"
+  },
+  {
+      "id": "imperial_histories",
+      "name": "Imperial Histories"
+  }
+];
+
 function App() {
   const [db, setDb] = useState(undefined);
   const [chosen, setChosen] = useState(undefined);
@@ -74,21 +125,6 @@ function App() {
       return ret;
     }
 
-    function extractOrigin(obj){
-      let r=[];
-      Object.keys(obj).forEach((key) => {
-        r=r.concat(recursiveExtract(obj[key], []));
-      });
-      return r.reduce((acc, current)=>{
-        const x = acc.find(item => item.id === current.id);
-        if (!x && (Object.prototype.toString.call(current) === '[object Object]')){
-          return acc.concat([current]);
-        }else{
-          return acc;
-        }
-      }, []);
-    }
-
     async function loadDb(){
       const file=await fetch("http://localhost:3010/loadFile", {method: "GET"});
       const dbObj = await file.json();
@@ -97,9 +133,8 @@ function App() {
         rings: dbObj.ring,
         traits: dbObj.trait,
         clans: dbObj.clan,
-        origin: await extractOrigin(dbObj, [])
+        origin: ORIGINS
       })
-      console.log(dbObj);
     }
 
     loadDb();
@@ -107,7 +142,6 @@ function App() {
 
 
   const choose = (value) => {
-    console.log(basicData);
     if (!db){
       alert("DB not found!");
       console.error("DB not found!");
@@ -124,8 +158,6 @@ function App() {
   }
 
   const handleSave = async (data, idx) => {
-    console.log("clicked");
-
     if (window.confirm("Apply changes?")){
       let newDb=db;
       newDb[chosen][idx]=data;    
@@ -135,9 +167,7 @@ function App() {
         headers: { 'Access-Control-Allow-Origin': '*', "Content-Type": 'application/json'},
         body: JSON.stringify({data:data, idx:idx, chosen:chosen}),
       });
-      console.log({file:file});
-      setDb(newDb);
-      
+      setDb(newDb);      
     }
   }
   
