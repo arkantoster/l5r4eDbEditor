@@ -81,7 +81,7 @@ function App() {
       });
       return r.reduce((acc, current)=>{
         const x = acc.find(item => item.id === current.id);
-        if (!x){
+        if (!x && (Object.prototype.toString.call(current) === '[object Object]')){
           return acc.concat([current]);
         }else{
           return acc;
@@ -107,6 +107,7 @@ function App() {
 
 
   const choose = (value) => {
+    console.log(basicData);
     if (!db){
       alert("DB not found!");
       console.error("DB not found!");
@@ -129,8 +130,6 @@ function App() {
       let newDb=db;
       newDb[chosen][idx]=data;    
       
-      console.log("saving...");
-      console.log({db:db, newDb:newDb, data:data});
       const file=await fetch("http://localhost:3010/saveFile", {
         method: "POST", 
         headers: { 'Access-Control-Allow-Origin': '*', "Content-Type": 'application/json'},
