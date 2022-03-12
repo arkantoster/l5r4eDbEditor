@@ -13,7 +13,7 @@ const Sheet=styled.div`
 
 
 
-export const Skill = ({data, idx, traits, handleSave}) => {
+export const Skill = ({data, idx, basicData, handleSave}) => {
     const [currentData, setCurrentData] = useState(data);
     const [open, setOpen] = useState(false);
 
@@ -36,7 +36,7 @@ export const Skill = ({data, idx, traits, handleSave}) => {
             
             <SimpleSelect
                 label={"Trait"}
-                options={traits}
+                options={basicData.traits}
                 value={currentData.trait}
                 changed={currentData.trait!==data.trait}
                 changeHandler={(value)=>setCurrentData({...currentData, trait: value })}
@@ -53,8 +53,6 @@ export const Skill = ({data, idx, traits, handleSave}) => {
                 value={currentData.masterAbilities}
                 changed={currentData.masterAbilities!==data.masterAbilities}
                 changeHandler={(value)=> {
-                    console.log("handling....");
-                    console.log({value:value, master: currentData.masterAbilities});
                     setCurrentData({...currentData, masterAbilities: value });
                 }}
             />
@@ -63,6 +61,14 @@ export const Skill = ({data, idx, traits, handleSave}) => {
                 value={currentData.description}
                 changed={currentData.description!==data.description} 
                 changeHandler={(value)=>setCurrentData({...currentData, description: value })} 
+            />
+
+            <SimpleSelect
+                label={"Origin"}
+                options={basicData.origin}
+                value={currentData.origin}
+                changed={currentData.origin!==data.origin}
+                changeHandler={(value)=>setCurrentData({...currentData, origin: value })}
             />
 
             <SaveButton onClick={()=>handleSave(currentData)}>Save Changes</SaveButton>

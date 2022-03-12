@@ -281,7 +281,7 @@ export const Rule = ({description, rule, changeHandler, rank}) => {
     const [cRule, setCRule] = useState(rule);
     const [cRank, setCRank] = useState(rank||undefined);
 
-    const doChange = () => {
+    const handler = (key, value) => {
         let objData={
             description: cDesc,
             rule: cRule
@@ -290,25 +290,24 @@ export const Rule = ({description, rule, changeHandler, rank}) => {
         if (rank)
             objData.rank=cRank;
 
-        changeHandler(objData);
-    }
-
-    const handler = (key, value) => {
         switch(key){
             case "description":
                 setCDesc(value);
+                objData.description=value;
                 break;
             case "rule":
                 setCRule(value);
+                objData.rule=value;
                 break;
             case "rank":
                 setCRank(value);
+                objData.rank=value;
                 break;
             default:
                 console.log("Key not found");
         };
 
-        doChange();
+        changeHandler(objData);
     }
     
     return (
@@ -372,7 +371,10 @@ export const Mastery = ({label, value, changed, changeHandler}) =>{
                     description={v.description} 
                     rule={v.rule} 
                     rank={v.rank} 
-                    changeHandler={changeHandler} 
+                    changeHandler={(ch) => {
+                        value[i]=ch;
+                        changeHandler(value);
+                    }} 
                 />
                 <div className={"removeItem"}>
                     <button title="Remove" onClick={()=>removeItem(i)}>&#10006;</button>

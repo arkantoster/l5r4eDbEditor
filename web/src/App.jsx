@@ -56,12 +56,49 @@ function App() {
   const [db, setDb] = useState(undefined);
   const [chosen, setChosen] = useState(undefined);
   const [chosenValues, setChosenValues] = useState([]);
+  const [basicData, setBasicData] = useState(undefined);
 
+  
   useEffect(()=>{
+
+    function recursiveExtract(obj, ret){
+      if (Array.isArray(obj)){
+        obj.map((a)=>{
+          return recursiveExtract(a, ret);
+        });
+      }
+      
+      if ("origin" in obj){
+        ret.push(obj.origin);
+      }
+      return ret;
+    }
+
+    function extractOrigin(obj){
+      let r=[];
+      Object.keys(obj).forEach((key) => {
+        r=r.concat(recursiveExtract(obj[key], []));
+      });
+      return r.reduce((acc, current)=>{
+        const x = acc.find(item => item.id === current.id);
+        if (!x){
+          return acc.concat([current]);
+        }else{
+          return acc;
+        }
+      }, []);
+    }
+
     async function loadDb(){
       const file=await fetch("http://localhost:3010/loadFile", {method: "GET"});
       const dbObj = await file.json();
       setDb(dbObj);
+      setBasicData({
+        rings: dbObj.ring,
+        traits: dbObj.trait,
+        clans: dbObj.clan,
+        origin: await extractOrigin(dbObj, [])
+      })
       console.log(dbObj);
     }
 
@@ -71,8 +108,8 @@ function App() {
 
   const choose = (value) => {
     if (!db){
-      alert("No DB found!");
-      console.error("No DB found!");
+      alert("DB not found!");
+      console.error("DB not found!");
     }
 
     const dbData=db[value];
@@ -121,7 +158,7 @@ function App() {
       </MainHeader>
       
       {chosen && chosen==="skill" && chosenValues.length>0 && chosenValues.map((c, idx) => (
-        <Skill key={idx} data={c} idx={idx} traits={db.trait} handleSave={(data)=>handleSave(data, idx)} />)
+        <Skill key={idx} data={c} idx={idx} basicData={basicData} handleSave={(data)=>handleSave(data, idx)} />)
       )}
 
     </div>
