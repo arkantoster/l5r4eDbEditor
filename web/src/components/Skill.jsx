@@ -11,6 +11,13 @@ const Sheet=styled.div`
     color:#f1f1f1;
 `;
 
+const objectsEqual = (o1, o2) => {
+    return (typeof o1 === 'object' && Object.keys(o1).length > 0 
+        ? Object.keys(o1).length === Object.keys(o2).length 
+            && Object.keys(o1).every(p => objectsEqual(o1[p], o2[p]))
+        : o1 === o2);
+}
+    
 
 
 export const Skill = ({data, idx, basicData, handleSave}) => {
@@ -51,7 +58,7 @@ export const Skill = ({data, idx, basicData, handleSave}) => {
             <Mastery
                 label={"Mastery"}
                 value={currentData.masterAbilities}
-                changed={currentData.masterAbilities!==data.masterAbilities}
+                changed={!objectsEqual(currentData.masterAbilities, data.masterAbilities)}
                 changeHandler={(value)=> {
                     setCurrentData({...currentData, masterAbilities: value });
                 }}

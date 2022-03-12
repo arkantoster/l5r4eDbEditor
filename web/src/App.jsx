@@ -1,6 +1,6 @@
 import './App.css';
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {Skill} from './components/Skill';
 
 const MainHeader = styled.div`
@@ -110,35 +110,21 @@ function App() {
   const [basicData, setBasicData] = useState(undefined);
 
   
+  const loadDb = useCallback(async ()=>{
+    const file=await fetch("http://localhost:3010/loadFile", {method: "GET"});
+    const dbObj = await file.json();
+    setDb(dbObj);
+    setBasicData({
+      rings: dbObj.ring,
+      traits: dbObj.trait,
+      clans: dbObj.clan,
+      origin: ORIGINS
+    })
+  }, []);
+
   useEffect(()=>{
-
-    function recursiveExtract(obj, ret){
-      if (Array.isArray(obj)){
-        obj.map((a)=>{
-          return recursiveExtract(a, ret);
-        });
-      }
-      
-      if ("origin" in obj){
-        ret.push(obj.origin);
-      }
-      return ret;
-    }
-
-    async function loadDb(){
-      const file=await fetch("http://localhost:3010/loadFile", {method: "GET"});
-      const dbObj = await file.json();
-      setDb(dbObj);
-      setBasicData({
-        rings: dbObj.ring,
-        traits: dbObj.trait,
-        clans: dbObj.clan,
-        origin: ORIGINS
-      })
-    }
-
     loadDb();
-  }, [])
+  }, [loadDb])
 
 
   const choose = (value) => {
@@ -162,12 +148,12 @@ function App() {
       let newDb=db;
       newDb[chosen][idx]=data;    
       
-      const file=await fetch("http://localhost:3010/saveFile", {
+      await fetch("http://localhost:3010/saveFile", {
         method: "POST", 
         headers: { 'Access-Control-Allow-Origin': '*', "Content-Type": 'application/json'},
         body: JSON.stringify({data:data, idx:idx, chosen:chosen}),
       });
-      setDb(newDb);      
+      loadDb();     
     }
   }
   
